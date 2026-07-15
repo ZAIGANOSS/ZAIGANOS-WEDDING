@@ -15,13 +15,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            /* Mencegah highlight biru mengganggu saat di-tap di Android */
             -webkit-tap-highlight-color: transparent; 
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #000;
-            overflow: hidden;
+            background-color: #faf8f5;
+            overflow: hidden; /* Kunci scroll layar Android sebelum dibuka */
             width: 100%;
             height: 100vh;
         }
@@ -32,7 +33,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100%; /* Gunakan % biar presisi dengan height body */
             /* Menggunakan BG.jpg */
             background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                         url('BG.jpg') no-repeat center center;
@@ -42,10 +43,10 @@
             align-items: center;
             z-index: 9999;
             text-align: center;
-            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease;
         }
 
-        /* Animasi geser ke atas saat dibuka */
+        /* Animasi geser ke atas saat dibuka (sangat smooth di HP Android) */
         .cover-wrapper.fade-out {
             opacity: 0;
             transform: translateY(-100%);
@@ -64,10 +65,10 @@
 
         /* UKURAN ICON BESAR KHUSUS ANDROID */
         .cover-icon-img {
-            width: 220px;
+            width: 220px; /* Ukuran besar mantap untuk layar HP */
             height: auto;
             margin-bottom: 25px;
-            filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.6));
+            filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.6)); /* Bayangan lebih tegas biar estetik */
             transition: transform 0.2s ease;
         }
 
@@ -87,16 +88,77 @@
             opacity: 0.95;
         }
 
-        /* Layar Loading Sementara Sebelum Redirect */
-        .loading-screen {
+        /* Konten Utama (Iframe Canva) */
+        .main-content {
             display: none;
             width: 100%;
             height: 100%;
+            position: relative;
             background-color: #faf8f5;
+        }
+
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 1;
+        }
+
+        .loading-placeholder {
+            display: flex;
             justify-content: center;
             align-items: center;
-            color: #888;
+            width: 100%;
+            height: 100%;
             font-size: 1.1rem;
+            color: #888;
+        }
+
+        /* Floating Music Button untuk Android */
+        .music-control-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #b19470;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .music-control-btn:active {
+            transform: scale(0.9);
+        }
+
+        .music-icon {
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .music-control-btn.playing {
+            animation: rotateMusic 4s linear infinite;
+        }
+
+        @keyframes rotateMusic {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -113,10 +175,17 @@
         </div>
     </div>
 
-    <!-- Screen Sementara -->
-    <div id="loading" class="loading-screen">
-        <p>Membuka Undangan...</p>
-    </div>
+    <!-- KONTEN UTAMA CANVA -->
+    <main id="main-content" class="main-content">
+        <div class="iframe-container">
+            <div id="canva-placeholder" class="loading-placeholder">Memuat Undangan...</div>
+        </div>
+        
+        <!-- Tombol Musik -->
+        <button id="music-control" class="music-control-btn playing">
+            <span class="music-icon">🎵</span>
+        </button>
+    </main>
 
     <!-- AUDIO -->
     <audio id="myAudio" loop>
@@ -125,29 +194,53 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Link Canva Lu
-            const linkCanvaUndangan = "https://zaiganos-wedding.my.canva.site/";
+            // LINK SEMATAN PINTAR CANVA LU SUDAH TERPASANG DI SINI
+            const linkCanvaUndangan = "https://www.canva.com/design/DAHPXheav2Q/watch?embed";
 
             const cover = document.getElementById('cover');
             const btnBuka = document.getElementById('btn-buka');
-            const loading = document.getElementById('loading');
+            const mainContent = document.getElementById('main-content');
             const myAudio = document.getElementById('myAudio');
+            const musicControl = document.getElementById('music-control');
+            const placeholder = document.getElementById('canva-placeholder');
 
-            // Klik Masuk
+            // Klik Masuk (Trigger Musik & Buka Undangan)
             btnBuka.addEventListener('click', function() {
-                // 1. Play Musik Dulu biar browser Android nge-lock permission audionya
-                myAudio.play().catch((err) => {
-                    console.log("Audio play blocked", err);
-                });
-
-                // 2. Transisi Cover Slide Up & Fade Out
                 cover.classList.add('fade-out');
-                loading.style.display = 'flex';
+                document.body.style.overflow = 'auto';
+                mainContent.style.display = 'block';
 
-                // 3. Beri jeda 0.6 detik biar animasinya kelar dulu, baru redirect ke Canva
-                setTimeout(function() {
-                    window.location.href = linkCanvaUndangan;
-                }, 600);
+                // Inject Iframe Canva
+                if (placeholder) {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = linkCanvaUndangan;
+                    iframe.style.width = "100%";
+                    iframe.style.height = "100%";
+                    iframe.setAttribute("allow", "autoplay");
+                    placeholder.parentNode.replaceChild(iframe, placeholder);
+                }
+
+                // Play Audio
+                playAudio();
+            });
+
+            function playAudio() {
+                myAudio.play().then(() => {
+                    musicControl.classList.add('playing');
+                }).catch((err) => {
+                    console.log("Audio play diblokir oleh Android: ", err);
+                });
+            }
+
+            // Play/Pause Musik manual
+            musicControl.addEventListener('click', function() {
+                if (myAudio.paused) {
+                    myAudio.play();
+                    musicControl.classList.add('playing');
+                } else {
+                    myAudio.pause();
+                    musicControl.classList.remove('playing');
+                }
             });
         });
     </script>
