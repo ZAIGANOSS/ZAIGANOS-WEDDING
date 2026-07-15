@@ -181,14 +181,15 @@
         </button>
     </main>
 
-    <!-- AUDIO (Gunakan path absolut atau relatif yang terjamin kuat) -->
+    <!-- AUDIO -->
     <audio id="myAudio" loop preload="auto">
         <source src="musik.mp3" type="audio/mpeg">
     </audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const linkCanvaUndangan = "https://www.canva.com/design/DAHPXheav2Q/watch?embed";
+            // Menggunakan domain asli Canva lu dengan bypass parameter
+            const linkCanvaUndangan = "https://zaiganos-wedding.my.canva.site/";
 
             const cover = document.getElementById('cover');
             const btnBuka = document.getElementById('btn-buka');
@@ -197,38 +198,36 @@
             const musicControl = document.getElementById('music-control');
             const placeholder = document.getElementById('canva-placeholder');
 
-            // Set volume maksimal agar langsung terdengar kencang
             myAudio.volume = 1.0;
 
             // Klik Masuk
             btnBuka.addEventListener('click', function() {
-                // LANGKAH 1: Langsung paksa putar musik terlebih dahulu sebelum animasi apa pun
+                // Jalankan musik terlebih dahulu secara instan
                 myAudio.play().then(() => {
-                    console.log("Musik berhasil diputar!");
+                    console.log("Musik diputar!");
                     musicControl.classList.add('playing');
                 }).catch((err) => {
-                    console.log("Audio play diblokir browser: ", err);
-                    // Jika gagal, coba trigger ulang secara paksa
+                    console.log("Audio diblokir browser, dipaksa ulang...", err);
                     setTimeout(() => { myAudio.play(); }, 100);
                 });
 
-                // LANGKAH 2: Jalankan transisi cover
+                // Jalankan transisi geser cover ke atas
                 cover.classList.add('fade-out');
                 document.body.style.overflow = 'auto';
                 mainContent.style.display = 'block';
 
-                // LANGKAH 3: Beri sedikit delay sebelum merender Iframe Canva biar browser fokus ke audio dulu
+                // Render website Canva di dalam iframe tanpa jeda tombol play video
                 setTimeout(function() {
                     if (placeholder) {
                         const iframe = document.createElement('iframe');
                         iframe.src = linkCanvaUndangan;
                         iframe.style.width = "100%";
                         iframe.style.height = "100%";
-                        // Berikan izin interaksi penuh di dalam iframe
-                        iframe.setAttribute("allow", "autoplay; encrypted-media");
+                        // Mengizinkan interaksi autoplay dan enkripsi media web asli
+                        iframe.setAttribute("allow", "autoplay; encrypted-media; fullscreen");
                         placeholder.parentNode.replaceChild(iframe, placeholder);
                     }
-                }, 300);
+                }, 100);
             });
 
             // Play/Pause Musik manual
