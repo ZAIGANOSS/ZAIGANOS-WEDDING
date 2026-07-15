@@ -15,14 +15,13 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* Mencegah highlight biru mengganggu saat di-tap di Android */
             -webkit-tap-highlight-color: transparent; 
         }
 
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #faf8f5;
-            overflow: hidden; /* Kunci scroll layar Android sebelum dibuka */
+            overflow: hidden;
             width: 100%;
             height: 100vh;
         }
@@ -33,8 +32,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%; /* Gunakan % biar presisi dengan height body */
-            /* Menggunakan BG.jpg */
+            height: 100%;
             background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                         url('BG.jpg') no-repeat center center;
             background-size: cover;
@@ -46,14 +44,14 @@
             transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease;
         }
 
-        /* Animasi geser ke atas saat dibuka (sangat smooth di HP Android) */
+        /* Animasi geser ke atas */
         .cover-wrapper.fade-out {
             opacity: 0;
             transform: translateY(-100%);
             pointer-events: none;
         }
 
-        /* Container Tombol Masuk di Tengah */
+        /* Container Tombol Masuk */
         .cover-content {
             display: flex;
             flex-direction: column;
@@ -63,21 +61,20 @@
             padding: 20px;
         }
 
-        /* UKURAN ICON BESAR KHUSUS ANDROID */
+        /* Icon PNG */
         .cover-icon-img {
-            width: 220px; /* Ukuran besar mantap untuk layar HP */
+            width: 220px;
             height: auto;
             margin-bottom: 25px;
-            filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.6)); /* Bayangan lebih tegas biar estetik */
+            filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.6));
             transition: transform 0.2s ease;
         }
 
-        /* Efek feedback instan saat di-tap di Android */
         .cover-content:active .cover-icon-img {
             transform: scale(0.92);
         }
 
-        /* Teks "MASUK" di bawah Icon */
+        /* Teks "MASUK" */
         .pencetan-masuk {
             color: #ffffff;
             font-size: 1.3rem;
@@ -124,7 +121,7 @@
             color: #888;
         }
 
-        /* Floating Music Button untuk Android */
+        /* Floating Music Button */
         .music-control-btn {
             position: fixed;
             bottom: 20px;
@@ -164,13 +161,10 @@
 </head>
 <body>
 
-    <!-- OVERLAY COVER MINIMALIS ANDROID -->
+    <!-- OVERLAY COVER -->
     <div id="cover" class="cover-wrapper">
         <div id="btn-buka" class="cover-content">
-            <!-- Icon PNG Besar di Tengah -->
             <img src="icon.png" alt="Flower Icon" class="cover-icon-img">
-            
-            <!-- Teks Pencetan -->
             <p class="pencetan-masuk">MASUK</p>
         </div>
     </div>
@@ -182,19 +176,18 @@
         </div>
         
         <!-- Tombol Musik -->
-        <button id="music-control" class="music-control-btn playing">
+        <button id="music-control" class="music-control-btn">
             <span class="music-icon">🎵</span>
         </button>
     </main>
 
-    <!-- AUDIO -->
-    <audio id="myAudio" loop>
+    <!-- AUDIO (Gunakan path absolut atau relatif yang terjamin kuat) -->
+    <audio id="myAudio" loop preload="auto">
         <source src="musik.mp3" type="audio/mpeg">
     </audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // LINK SEMATAN PINTAR CANVA LU SUDAH TERPASANG DI SINI
             const linkCanvaUndangan = "https://www.canva.com/design/DAHPXheav2Q/watch?embed";
 
             const cover = document.getElementById('cover');
@@ -204,33 +197,39 @@
             const musicControl = document.getElementById('music-control');
             const placeholder = document.getElementById('canva-placeholder');
 
-            // Klik Masuk (Trigger Musik & Buka Undangan)
+            // Set volume maksimal agar langsung terdengar kencang
+            myAudio.volume = 1.0;
+
+            // Klik Masuk
             btnBuka.addEventListener('click', function() {
+                // LANGKAH 1: Langsung paksa putar musik terlebih dahulu sebelum animasi apa pun
+                myAudio.play().then(() => {
+                    console.log("Musik berhasil diputar!");
+                    musicControl.classList.add('playing');
+                }).catch((err) => {
+                    console.log("Audio play diblokir browser: ", err);
+                    // Jika gagal, coba trigger ulang secara paksa
+                    setTimeout(() => { myAudio.play(); }, 100);
+                });
+
+                // LANGKAH 2: Jalankan transisi cover
                 cover.classList.add('fade-out');
                 document.body.style.overflow = 'auto';
                 mainContent.style.display = 'block';
 
-                // Inject Iframe Canva
-                if (placeholder) {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = linkCanvaUndangan;
-                    iframe.style.width = "100%";
-                    iframe.style.height = "100%";
-                    iframe.setAttribute("allow", "autoplay");
-                    placeholder.parentNode.replaceChild(iframe, placeholder);
-                }
-
-                // Play Audio
-                playAudio();
+                // LANGKAH 3: Beri sedikit delay sebelum merender Iframe Canva biar browser fokus ke audio dulu
+                setTimeout(function() {
+                    if (placeholder) {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = linkCanvaUndangan;
+                        iframe.style.width = "100%";
+                        iframe.style.height = "100%";
+                        // Berikan izin interaksi penuh di dalam iframe
+                        iframe.setAttribute("allow", "autoplay; encrypted-media");
+                        placeholder.parentNode.replaceChild(iframe, placeholder);
+                    }
+                }, 300);
             });
-
-            function playAudio() {
-                myAudio.play().then(() => {
-                    musicControl.classList.add('playing');
-                }).catch((err) => {
-                    console.log("Audio play diblokir oleh Android: ", err);
-                });
-            }
 
             // Play/Pause Musik manual
             musicControl.addEventListener('click', function() {
