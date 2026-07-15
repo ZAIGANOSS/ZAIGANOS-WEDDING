@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Undangan Pernikahan</title>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-    <style>
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -20,10 +8,11 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #111111; /* Tema gelap estetik */
+            background-color: #111111; 
             color: #ffffff;
-            overflow-x: hidden;
-            width: 100%;
+            overflow: hidden; /* Mencegah double scrollbar di browser PC */
+            width: 100vw;
+            height: 100vh;
         }
 
         /* OVERLAY COVER - Tampilan Awal Fullscreen */
@@ -67,10 +56,6 @@
             transition: transform 0.2s ease;
         }
 
-        .cover-content:active .cover-icon-img {
-            transform: scale(0.92);
-        }
-
         .pencetan-masuk {
             color: #ffffff;
             font-size: 1.2rem;
@@ -85,40 +70,58 @@
             transition: all 0.3s ease;
         }
 
-        /* SCROLL SNAP CONTAINER */
+        /* SCROLL SNAP CONTAINER (Membatasi tampilan mobile di tengah) */
         .snap-container {
             scroll-snap-type: y mandatory;
             overflow-y: scroll;
             height: 100vh;
             width: 100%;
-            max-width: 450px; /* Lebar HP standard agar rapi di PC */
+            max-width: 450px; 
             margin: 0 auto;
             background-color: #000000;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            display: none; /* Disembunyikan sebelum klik Masuk */
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            display: none; 
+            position: relative;
+
+            /* TRICK UTAMA: Menyembunyikan scrollbar di Chrome, Safari, dan Opera */
+            -webkit-overflow-scrolling: touch; /* Biar scroll di iOS/HP sangat mulus */
+        }
+
+        /* Menyembunyikan scrollbar untuk Chrome, Safari, dan Opera */
+        .snap-container::-webkit-scrollbar {
+            display: none;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        /* Menyembunyikan scrollbar untuk Firefox & IE/Edge */
+        .snap-container {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
 
         /* SETIAP SECTION/SLIDE */
         .slide-section {
             scroll-snap-align: start;
-            min-height: 100vh;
+            height: 100vh;
             width: 100%;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             background: #000;
+            overflow: hidden; /* Mengunci elemen agar tidak bocor keluar slide */
         }
 
         /* Video MP4 Full-width */
         .slide-video {
             width: 100%;
-            height: 100vh;
-            object-fit: cover; /* Video mengisi penuh area layar */
+            height: 100%;
+            object-fit: cover; 
             display: block;
         }
 
-        /* FORM BUKU TAMU - ditaruh menumpuk di atas slide 5 */
+        /* FORM BUKU TAMU */
         .guestbook-overlay {
             position: absolute;
             bottom: 40px;
@@ -132,6 +135,7 @@
             border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 10;
         }
 
         .guestbook-title {
@@ -139,7 +143,7 @@
             text-align: center;
             margin-bottom: 15px;
             letter-spacing: 2px;
-            color: #d4af37; /* Aksen Gold */
+            color: #d4af37; 
             font-weight: 600;
         }
 
@@ -185,7 +189,7 @@
         .music-control-btn {
             position: fixed;
             bottom: 25px;
-            right: 25px;
+            right: calc(50% - 200px); /* Memosisikan tombol agar tetap menempel di dekat frame hp (untuk PC) */
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -197,6 +201,13 @@
             display: none;
             justify-content: center;
             align-items: center;
+        }
+
+        /* Responsif untuk tampilan layar HP asli */
+        @media (max-width: 450px) {
+            .music-control-btn {
+                right: 25px;
+            }
         }
 
         .music-icon {
@@ -213,160 +224,3 @@
             to { transform: rotate(360deg); }
         }
     </style>
-</head>
-<body>
-
-    <!-- OVERLAY COVER -->
-    <div id="cover" class="cover-wrapper">
-        <div id="btn-buka" class="cover-content">
-            <img src="icon.png" alt="Wedding Icon" class="cover-icon-img">
-            <button class="pencetan-masuk">Buka Undangan</button>
-        </div>
-    </div>
-
-    <!-- MAIN CONTAINER (SCROLL SNAP) -->
-    <div id="main-container" class="snap-container">
-        
-        <!-- Slide 1 -->
-        <section class="slide-section">
-            <video class="slide-video" autoplay loop muted playsinline>
-                <source src="1.mp4" type="video/mp4">
-            </video>
-        </section>
-
-        <!-- Slide 2 -->
-        <section class="slide-section">
-            <video class="slide-video" autoplay loop muted playsinline>
-                <source src="2.mp4" type="video/mp4">
-            </video>
-        </section>
-
-        <!-- Slide 3 -->
-        <section class="slide-section">
-            <video class="slide-video" autoplay loop muted playsinline>
-                <source src="3.mp4" type="video/mp4">
-            </video>
-        </section>
-
-        <!-- Slide 4 -->
-        <section class="slide-section">
-            <video class="slide-video" autoplay loop muted playsinline>
-                <source src="4.mp4" type="video/mp4">
-            </video>
-        </section>
-
-        <!-- Slide 5 (Dilengkapi Form Buku Tamu di Atasnya) -->
-        <section class="slide-section">
-            <video class="slide-video" autoplay loop muted playsinline>
-                <source src="5.mp4" type="video/mp4">
-            </video>
-            
-            <!-- Elemen Buku Tamu Overlapping di Slide Terakhir -->
-            <div class="guestbook-overlay">
-                <p class="guestbook-title">BUKU TAMU & RSVP</p>
-                <form id="rsvp-form">
-                    <div class="form-group">
-                        <input type="text" name="Nama" placeholder="Nama Lengkap Anda" required>
-                    </div>
-                    <div class="form-group">
-                        <select name="Kehadiran" required>
-                            <option value="" disabled selected>Konfirmasi Kehadiran</option>
-                            <option value="Hadir">Hadir</option>
-                            <option value="Tidak Hadir">Tidak Hadir</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <textarea name="Ucapan" rows="3" placeholder="Tulis ucapan hangat Anda..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn-submit" id="submit-btn">Kirim Ucapan</button>
-                </form>
-            </div>
-        </section>
-
-    </div>
-
-    <!-- FLOATING MUSIC BUTTON -->
-    <button id="music-control" class="music-control-btn">
-        <span class="music-icon">🎵</span>
-    </button>
-
-    <!-- AUDIO BACKSONG -->
-    <audio id="myAudio" loop preload="auto">
-        <source src="musik.mp3" type="video/mpeg">
-    </audio>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const cover = document.getElementById('cover');
-            const btnBuka = document.getElementById('btn-buka');
-            const mainContainer = document.getElementById('main-container');
-            const myAudio = document.getElementById('myAudio');
-            const musicControl = document.getElementById('music-control');
-            const rsvpForm = document.getElementById('rsvp-form');
-            const submitBtn = document.getElementById('submit-btn');
-
-            // --- 1. Logika Klik Masuk / Buka Undangan ---
-            btnBuka.addEventListener('click', function() {
-                // Play audio secara instan
-                myAudio.play().then(() => {
-                    musicControl.classList.add('playing');
-                }).catch((err) => {
-                    console.log("Autoplay audio diblokir, memicu klik tambahan...", err);
-                    setTimeout(() => { myAudio.play(); }, 100);
-                });
-
-                // Transisi membuang Cover dan menampilkan Scroll Container
-                cover.classList.add('fade-out');
-                mainContainer.style.display = 'block';
-                musicControl.style.display = 'flex';
-                
-                // Triger video di slide pertama agar pasti autoplay saat dibuka
-                const firstVideo = mainContainer.querySelector('video');
-                if (firstVideo) firstVideo.play();
-            });
-
-            // --- 2. Kontrol Musik Manual ---
-            musicControl.addEventListener('click', function() {
-                if (myAudio.paused) {
-                    myAudio.play();
-                    musicControl.classList.add('playing');
-                } else {
-                    myAudio.pause();
-                    musicControl.classList.remove('playing');
-                }
-            });
-
-            // --- 3. Pengiriman Buku Tamu (Google Sheets) ---
-            // GANTI URL DI BAWAH INI dengan URL Web App dari Google Apps Script milik lu nanti!
-            const scriptURL = 'MASUKKAN_URL_WEB_APP_GOOGLE_SCRIPTS_LU_DI_SINI';
-
-            rsvpForm.addEventListener('submit', e => {
-                e.preventDefault();
-                submitBtn.disabled = true;
-                submitBtn.innerText = 'Mengirim...';
-
-                if(scriptURL === 'MASUKKAN_URL_WEB_APP_GOOGLE_SCRIPTS_LU_DI_SINI') {
-                    alert('Koneksi Google Sheets belum dikonfigurasi! Harap ganti URL Script di baris kode HTML.');
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'Kirim Ucapan';
-                    return;
-                }
-
-                fetch(scriptURL, { method: 'POST', body: new FormData(rsvpForm)})
-                    .then(response => {
-                        alert('Terima kasih! Ucapan & RSVP Anda telah tersimpan.');
-                        rsvpForm.reset();
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = 'Kirim Ucapan';
-                    })
-                    .catch(error => {
-                        console.error('Error!', error.message);
-                        alert('Gagal mengirim ucapan, silakan coba lagi.');
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = 'Kirim Ucapan';
-                    });
-            });
-        });
-    </script>
-</body>
-</html>
