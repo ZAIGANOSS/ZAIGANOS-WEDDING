@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Undangan Pernikahan</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000;
+            overflow: hidden;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Styling Cover - Fullscreen Android */
+        .cover-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Menggunakan BG.jpg */
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                        url('BG.jpg') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
+        }
+
+        /* Animasi geser ke atas saat dibuka */
+        .cover-wrapper.fade-out {
+            opacity: 0;
+            transform: translateY(-100%);
+            pointer-events: none;
+        }
+
+        /* Container Tombol Masuk di Tengah */
+        .cover-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            width: 100%;
+            padding: 20px;
+        }
+
+        /* UKURAN ICON BESAR KHUSUS ANDROID */
+        .cover-icon-img {
+            width: 220px;
+            height: auto;
+            margin-bottom: 25px;
+            filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.6));
+            transition: transform 0.2s ease;
+        }
+
+        /* Efek feedback instan saat di-tap di Android */
+        .cover-content:active .cover-icon-img {
+            transform: scale(0.92);
+        }
+
+        /* Teks "MASUK" di bawah Icon */
+        .pencetan-masuk {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+            opacity: 0.95;
+        }
+
+        /* Layar Loading Sementara Sebelum Redirect */
+        .loading-screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            background-color: #faf8f5;
+            justify-content: center;
+            align-items: center;
+            color: #888;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY COVER MINIMALIS ANDROID -->
+    <div id="cover" class="cover-wrapper">
+        <div id="btn-buka" class="cover-content">
+            <!-- Icon PNG Besar di Tengah -->
+            <img src="icon.png" alt="Flower Icon" class="cover-icon-img">
+            
+            <!-- Teks Pencetan -->
+            <p class="pencetan-masuk">MASUK</p>
+        </div>
+    </div>
+
+    <!-- Screen Sementara -->
+    <div id="loading" class="loading-screen">
+        <p>Membuka Undangan...</p>
+    </div>
+
+    <!-- AUDIO -->
+    <audio id="myAudio" loop>
+        <source src="musik.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Link Canva Lu
+            const linkCanvaUndangan = "https://zaiganos-wedding.my.canva.site/";
+
+            const cover = document.getElementById('cover');
+            const btnBuka = document.getElementById('btn-buka');
+            const loading = document.getElementById('loading');
+            const myAudio = document.getElementById('myAudio');
+
+            // Klik Masuk
+            btnBuka.addEventListener('click', function() {
+                // 1. Play Musik Dulu biar browser Android nge-lock permission audionya
+                myAudio.play().catch((err) => {
+                    console.log("Audio play blocked", err);
+                });
+
+                // 2. Transisi Cover Slide Up & Fade Out
+                cover.classList.add('fade-out');
+                loading.style.display = 'flex';
+
+                // 3. Beri jeda 0.6 detik biar animasinya kelar dulu, baru redirect ke Canva
+                setTimeout(function() {
+                    window.location.href = linkCanvaUndangan;
+                }, 600);
+            });
+        });
+    </script>
+</body>
+</html>
