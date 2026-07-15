@@ -20,20 +20,20 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #faf8f5;
-            overflow: hidden;
+            background-color: #111111; /* Tema gelap estetik */
+            color: #ffffff;
+            overflow-x: hidden;
             width: 100%;
-            height: 100vh;
         }
 
-        /* Styling Cover - Fullscreen Android */
+        /* OVERLAY COVER - Tampilan Awal Fullscreen */
         .cover-wrapper {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
                         url('BG.jpg') no-repeat center center;
             background-size: cover;
             display: flex;
@@ -44,14 +44,12 @@
             transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease;
         }
 
-        /* Animasi geser ke atas */
         .cover-wrapper.fade-out {
             opacity: 0;
             transform: translateY(-100%);
             pointer-events: none;
         }
 
-        /* Container Tombol Masuk */
         .cover-content {
             display: flex;
             flex-direction: column;
@@ -61,9 +59,8 @@
             padding: 20px;
         }
 
-        /* Icon PNG */
         .cover-icon-img {
-            width: 220px;
+            width: 200px;
             height: auto;
             margin-bottom: 25px;
             filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.6));
@@ -74,79 +71,137 @@
             transform: scale(0.92);
         }
 
-        /* Teks "MASUK" */
         .pencetan-masuk {
             color: #ffffff;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
             letter-spacing: 4px;
             text-transform: uppercase;
             text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
-            opacity: 0.95;
+            border: 2px solid #ffffff;
+            padding: 10px 30px;
+            border-radius: 30px;
+            background: rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
         }
 
-        /* Konten Utama (Iframe Canva) */
-        .main-content {
-            display: none;
+        /* SCROLL SNAP CONTAINER */
+        .snap-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
             width: 100%;
-            height: 100%;
+            max-width: 450px; /* Lebar HP standard agar rapi di PC */
+            margin: 0 auto;
+            background-color: #000000;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            display: none; /* Disembunyikan sebelum klik Masuk */
+        }
+
+        /* SETIAP SECTION/SLIDE */
+        .slide-section {
+            scroll-snap-align: start;
+            min-height: 100vh;
+            width: 100%;
             position: relative;
-            background-color: #faf8f5;
-        }
-
-        .iframe-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .iframe-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            z-index: 1;
-        }
-
-        .loading-placeholder {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            height: 100%;
-            font-size: 1.1rem;
-            color: #888;
+            background: #000;
         }
 
-        /* Floating Music Button */
+        /* Video MP4 Full-width */
+        .slide-video {
+            width: 100%;
+            height: 100vh;
+            object-fit: cover; /* Video mengisi penuh area layar */
+            display: block;
+        }
+
+        /* FORM BUKU TAMU - ditaruh menumpuk di atas slide 5 */
+        .guestbook-overlay {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .guestbook-title {
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            color: #d4af37; /* Aksen Gold */
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 10px;
+            background: #d4af37;
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* FLOATING MUSIC BUTTON */
         .music-control-btn {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 48px;
-            height: 48px;
+            bottom: 25px;
+            right: 25px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            background-color: #b19470;
+            background-color: #d4af37;
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             z-index: 1000;
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
-            transition: transform 0.2s ease;
-        }
-
-        .music-control-btn:active {
-            transform: scale(0.9);
         }
 
         .music-icon {
-            font-size: 1.2rem;
-            color: white;
+            font-size: 1.1rem;
+            color: #000;
         }
 
         .music-control-btn.playing {
@@ -164,73 +219,113 @@
     <!-- OVERLAY COVER -->
     <div id="cover" class="cover-wrapper">
         <div id="btn-buka" class="cover-content">
-            <img src="icon.png" alt="Flower Icon" class="cover-icon-img">
-            <p class="pencetan-masuk">MASUK</p>
+            <img src="icon.png" alt="Wedding Icon" class="cover-icon-img">
+            <button class="pencetan-masuk">Buka Undangan</button>
         </div>
     </div>
 
-    <!-- KONTEN UTAMA CANVA -->
-    <main id="main-content" class="main-content">
-        <div class="iframe-container">
-            <div id="canva-placeholder" class="loading-placeholder">Memuat Undangan...</div>
-        </div>
+    <!-- MAIN CONTAINER (SCROLL SNAP) -->
+    <div id="main-container" class="snap-container">
         
-        <!-- Tombol Musik -->
-        <button id="music-control" class="music-control-btn">
-            <span class="music-icon">🎵</span>
-        </button>
-    </main>
+        <!-- Slide 1 -->
+        <section class="slide-section">
+            <video class="slide-video" autoplay loop muted playsinline>
+                <source src="1.mp4" type="video/mp4">
+            </video>
+        </section>
 
-    <!-- AUDIO -->
+        <!-- Slide 2 -->
+        <section class="slide-section">
+            <video class="slide-video" autoplay loop muted playsinline>
+                <source src="2.mp4" type="video/mp4">
+            </video>
+        </section>
+
+        <!-- Slide 3 -->
+        <section class="slide-section">
+            <video class="slide-video" autoplay loop muted playsinline>
+                <source src="3.mp4" type="video/mp4">
+            </video>
+        </section>
+
+        <!-- Slide 4 -->
+        <section class="slide-section">
+            <video class="slide-video" autoplay loop muted playsinline>
+                <source src="4.mp4" type="video/mp4">
+            </video>
+        </section>
+
+        <!-- Slide 5 (Dilengkapi Form Buku Tamu di Atasnya) -->
+        <section class="slide-section">
+            <video class="slide-video" autoplay loop muted playsinline>
+                <source src="5.mp4" type="video/mp4">
+            </video>
+            
+            <!-- Elemen Buku Tamu Overlapping di Slide Terakhir -->
+            <div class="guestbook-overlay">
+                <p class="guestbook-title">BUKU TAMU & RSVP</p>
+                <form id="rsvp-form">
+                    <div class="form-group">
+                        <input type="text" name="Nama" placeholder="Nama Lengkap Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <select name="Kehadiran" required>
+                            <option value="" disabled selected>Konfirmasi Kehadiran</option>
+                            <option value="Hadir">Hadir</option>
+                            <option value="Tidak Hadir">Tidak Hadir</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="Ucapan" rows="3" placeholder="Tulis ucapan hangat Anda..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" id="submit-btn">Kirim Ucapan</button>
+                </form>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- FLOATING MUSIC BUTTON -->
+    <button id="music-control" class="music-control-btn">
+        <span class="music-icon">🎵</span>
+    </button>
+
+    <!-- AUDIO BACKSONG -->
     <audio id="myAudio" loop preload="auto">
-        <source src="musik.mp3" type="audio/mpeg">
+        <source src="musik.mp3" type="video/mpeg">
     </audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Menggunakan domain asli Canva lu dengan bypass parameter
-            const linkCanvaUndangan = "https://zaiganos-wedding.my.canva.site/";
-
             const cover = document.getElementById('cover');
             const btnBuka = document.getElementById('btn-buka');
-            const mainContent = document.getElementById('main-content');
+            const mainContainer = document.getElementById('main-container');
             const myAudio = document.getElementById('myAudio');
             const musicControl = document.getElementById('music-control');
-            const placeholder = document.getElementById('canva-placeholder');
+            const rsvpForm = document.getElementById('rsvp-form');
+            const submitBtn = document.getElementById('submit-btn');
 
-            myAudio.volume = 1.0;
-
-            // Klik Masuk
+            // --- 1. Logika Klik Masuk / Buka Undangan ---
             btnBuka.addEventListener('click', function() {
-                // Jalankan musik terlebih dahulu secara instan
+                // Play audio secara instan
                 myAudio.play().then(() => {
-                    console.log("Musik diputar!");
                     musicControl.classList.add('playing');
                 }).catch((err) => {
-                    console.log("Audio diblokir browser, dipaksa ulang...", err);
+                    console.log("Autoplay audio diblokir, memicu klik tambahan...", err);
                     setTimeout(() => { myAudio.play(); }, 100);
                 });
 
-                // Jalankan transisi geser cover ke atas
+                // Transisi membuang Cover dan menampilkan Scroll Container
                 cover.classList.add('fade-out');
-                document.body.style.overflow = 'auto';
-                mainContent.style.display = 'block';
-
-                // Render website Canva di dalam iframe tanpa jeda tombol play video
-                setTimeout(function() {
-                    if (placeholder) {
-                        const iframe = document.createElement('iframe');
-                        iframe.src = linkCanvaUndangan;
-                        iframe.style.width = "100%";
-                        iframe.style.height = "100%";
-                        // Mengizinkan interaksi autoplay dan enkripsi media web asli
-                        iframe.setAttribute("allow", "autoplay; encrypted-media; fullscreen");
-                        placeholder.parentNode.replaceChild(iframe, placeholder);
-                    }
-                }, 100);
+                mainContainer.style.display = 'block';
+                musicControl.style.display = 'flex';
+                
+                // Triger video di slide pertama agar pasti autoplay saat dibuka
+                const firstVideo = mainContainer.querySelector('video');
+                if (firstVideo) firstVideo.play();
             });
 
-            // Play/Pause Musik manual
+            // --- 2. Kontrol Musik Manual ---
             musicControl.addEventListener('click', function() {
                 if (myAudio.paused) {
                     myAudio.play();
@@ -239,6 +334,37 @@
                     myAudio.pause();
                     musicControl.classList.remove('playing');
                 }
+            });
+
+            // --- 3. Pengiriman Buku Tamu (Google Sheets) ---
+            // GANTI URL DI BAWAH INI dengan URL Web App dari Google Apps Script milik lu nanti!
+            const scriptURL = 'MASUKKAN_URL_WEB_APP_GOOGLE_SCRIPTS_LU_DI_SINI';
+
+            rsvpForm.addEventListener('submit', e => {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Mengirim...';
+
+                if(scriptURL === 'MASUKKAN_URL_WEB_APP_GOOGLE_SCRIPTS_LU_DI_SINI') {
+                    alert('Koneksi Google Sheets belum dikonfigurasi! Harap ganti URL Script di baris kode HTML.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Kirim Ucapan';
+                    return;
+                }
+
+                fetch(scriptURL, { method: 'POST', body: new FormData(rsvpForm)})
+                    .then(response => {
+                        alert('Terima kasih! Ucapan & RSVP Anda telah tersimpan.');
+                        rsvpForm.reset();
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = 'Kirim Ucapan';
+                    })
+                    .catch(error => {
+                        console.error('Error!', error.message);
+                        alert('Gagal mengirim ucapan, silakan coba lagi.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = 'Kirim Ucapan';
+                    });
             });
         });
     </script>
